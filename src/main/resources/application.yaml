@@ -1,0 +1,27 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: route1
+          uri: http://127.0.0.1:8000/  # http://127.0.0.1:8000/  https://httpbin.org
+          predicates:
+            - Path=/get
+          filters:
+            - AddRequestHeader=X-Request-Foo, Bar
+            - AddResponseHeader=Y-Request-Foo, Bar
+        - id: route2
+          uri: http://127.0.0.1:8000/
+          predicates:
+            - Path=/uploadpdf
+            - Method=POST
+          filters:
+            - RateLimitFilter
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE
+    org.springframework.web: DEBUG
+
+
