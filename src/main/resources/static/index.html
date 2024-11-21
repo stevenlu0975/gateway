@@ -12,7 +12,6 @@
       <br />
       <input type = "button" value = "Upload File" id="submit"/>
     </form>
-    <a class="btn btn-success" href="/get" role="button">開始</a>
     </p>
   </div>
   <script>
@@ -29,10 +28,14 @@
 
         const formData = new FormData();
         formData.append("file", file);
-
+        // Add headers
+        const headers = {
+          "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJVU0VSX0lEIjoiMTIzNDUiLCJleHAiOjE3MzM2NDIzMTZ9.qBbJYNUvhTcQAwYZwmJ0YO1KP61mb55DBGnWqx35iEI",  // Example authorization header// Replace with your custom header
+        };
         const response = await fetch("/uploadpdf", {
           method: "POST",
           body: formData,
+          headers: headers,
         });
 
         if (!response.ok) {

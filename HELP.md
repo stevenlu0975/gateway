@@ -18,6 +18,13 @@ The following guides illustrate how to use some features concretely:
 
 ### Maven Parent overrides
 
+### 作弊token
+365 天
+
+====
+eyJhbGciOiJIUzI1NiJ9.eyJVU0VSX0lEIjoiMTIzNDUiLCJleHAiOjE3MzM2NDIzMTZ9.qBbJYNUvhTcQAwYZwmJ0YO1KP61mb55DBGnWqx35iEI
+====
+
 Due to Maven's design, elements are inherited from the parent POM to the project POM.
 While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the parent.
 To prevent this, the project POM contains empty overrides for these elements.
