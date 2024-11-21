@@ -2,6 +2,7 @@ package com.systex.gateway.GateWayFilter;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -31,7 +32,11 @@ public class RateLimitFilter extends AbstractGatewayFilterFactory<RateLimitFilte
                 return chain.filter(exchange);
             } else {
                 exchange.getResponse().setStatusCode(config.getStatusCode());
-                return exchange.getResponse().setComplete();
+                //加入 message
+                String errorMessage = "Rate limit exceeded. Please try again later.";
+                byte[] bytes = errorMessage.getBytes(); // 將訊息轉為位元組
+                DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes); // 包裝為 DataBuffer
+                return exchange.getResponse().writeWith(Mono.just(buffer));
             }
         };
     }
