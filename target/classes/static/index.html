@@ -5,7 +5,10 @@
   <title>Title</title>
 </head>
 <body>
+<<<<<<< HEAD
   <button id="getToken"> get token</button>
+=======
+>>>>>>> 821bffbcdf80ea7a0a2aad0d2d14e8c12e9e8c92
   <div class="content">
     <p style="text-align:center">
     <form enctype = "multipart/form-data">
@@ -13,7 +16,10 @@
       <br />
       <input type = "button" value = "Upload File" id="submit"/>
     </form>
+<<<<<<< HEAD
     <a class="btn btn-success" href="/get" role="button">開始</a>
+=======
+>>>>>>> 821bffbcdf80ea7a0a2aad0d2d14e8c12e9e8c92
     </p>
   </div>
   <script>
@@ -30,10 +36,21 @@
 
         const formData = new FormData();
         formData.append("file", file);
+<<<<<<< HEAD
 
         const response = await fetch("/uploadpdf", {
           method: "POST",
           body: formData,
+=======
+        // Add headers
+        const headers = {
+          "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiTUFTVEVSIiwiVVNFUl9JRCI6IjEyMzQ1IiwiZXhwIjoxNzMzNjQ1NDMyfQ.dFGznLlWsmjyd21yuvd6UGRHPDoJ0Umegfh7tQYnPqY",  // Example authorization header// Replace with your custom header
+        };
+        const response = await fetch("/uploadpdf", {
+          method: "POST",
+          body: formData,
+          headers: headers,
+>>>>>>> 821bffbcdf80ea7a0a2aad0d2d14e8c12e9e8c92
         });
 
         if (!response.ok) {
@@ -59,7 +76,11 @@
         }
       }
     }
+<<<<<<< HEAD
     const throttling = throttleApiCall(uploadCall, 5000); // ms
+=======
+    const throttling = throttleApiCall(uploadCall, 10000); // ms
+>>>>>>> 821bffbcdf80ea7a0a2aad0d2d14e8c12e9e8c92
     document.getElementById("submit").addEventListener("click", throttling);
   </script>
 </body>
