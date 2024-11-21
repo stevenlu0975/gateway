@@ -20,13 +20,14 @@ The following guides illustrate how to use some features concretely:
 
 ### 作弊token
 365 天
+master
 
-====
-eyJhbGciOiJIUzI1NiJ9.eyJVU0VSX0lEIjoiMTIzNDUiLCJleHAiOjE3MzM2NDIzMTZ9.qBbJYNUvhTcQAwYZwmJ0YO1KP61mb55DBGnWqx35iEI
-====
+----
+    eyJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiTUFTVEVSIiwiVVNFUl9JRCI6IjEyMzQ1IiwiZXhwIjoxNzMzNjQ1NDMyfQ.dFGznLlWsmjyd21yuvd6UGRHPDoJ0Umegfh7tQYnPqY
+----
 
-Due to Maven's design, elements are inherited from the parent POM to the project POM.
-While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the parent.
-To prevent this, the project POM contains empty overrides for these elements.
-If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
+user
+----
+    eyJhbGciOiJIUzI1NiJ9.eyJST0xFIjoidXNlciIsIlVTRVJfSUQiOiIxMjM0NSIsImV4cCI6MTczMzY0NTU0Nn0.uLe_rFgA-CWRyd6tPLXglU4xrJNoPqp-8-p1aBXwk2E
+----
 

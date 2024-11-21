@@ -18,6 +18,11 @@ spring:
           filters:
             - AuthorizationFilter
             - RateLimitFilter
+        - id: route3
+          uri: http://127.0.0.1:8000/
+          predicates:
+            - Path=/user
+            - Method=GET
 logging:
   level:
     org:

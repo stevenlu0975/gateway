@@ -30,7 +30,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             log.info("AuthenticationFilter start");
             Map<String,Object> claims = new HashMap<>();
             claims.put("USER_ID", "12345");
-            String token = JwtUtil.createJWT(JwtUtil.KEY, 60*60*1000, claims);
+            claims.put("ROLE", "user");
+
+            String token = JwtUtil.createJWT(JwtUtil.KEY, 365*24*60*60*1000, claims);
             log.info("generate token {}", token);
             exchange.getResponse().getHeaders().add("authToken", token);
             DataBuffer buffer = GateWayResponseHelper.parseToDataBuffer(config.getStatusCode(),200, "",exchange.getResponse());
