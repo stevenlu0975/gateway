@@ -1,11 +1,16 @@
 package com.systex.gateway.GateWayFilter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.systex.gateway.model.Result;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +36,21 @@ public class RateLimitFilter extends AbstractGatewayFilterFactory<RateLimitFilte
                 return chain.filter(exchange);
             } else {
                 exchange.getResponse().setStatusCode(config.getStatusCode());
-                return exchange.getResponse().setComplete();
+
+                Result<Object> errorResult = Result.error(
+                        config.getStatusCode().value(),
+                        "Too many requests, please try again later."
+                );
+                String jsonResponse;
+                try {
+                    jsonResponse = new ObjectMapper().writeValueAsString(errorResult);
+                } catch (JsonProcessingException e) {
+                    jsonResponse = "{\"code\":500,\"message\":\"JSON Process Error\"}";
+                }
+                DataBuffer buffer = exchange.getResponse()
+                        .bufferFactory()
+                        .wrap(jsonResponse.getBytes(StandardCharsets.UTF_8));
+                return exchange.getResponse().writeWith(Mono.just(buffer));
             }
         };
     }
