@@ -3,18 +3,20 @@ spring:
     gateway:
       routes:
         - id: route1
-          uri: http://127.0.0.1:8000/  # http://127.0.0.1:8000/  https://httpbin.org
+          uri: http://127.0.0.1:8000  # http://127.0.0.1:8000  https://httpbin.org
           predicates:
             - Path=/get
           filters:
             - AddRequestHeader=X-Request-Foo, Bar
             - AddResponseHeader=Y-Request-Foo, Bar
+            - AuthenticationFilter
         - id: route2
           uri: http://127.0.0.1:8000/
           predicates:
             - Path=/uploadpdf
             - Method=POST
           filters:
+            - AuthorizationFilter
             - RateLimitFilter
 logging:
   level:

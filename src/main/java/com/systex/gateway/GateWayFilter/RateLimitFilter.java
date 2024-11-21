@@ -1,11 +1,19 @@
 package com.systex.gateway.GateWayFilter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.systex.gateway.model.GateWayResponseHelper;
+import com.systex.gateway.model.Result;
+import com.systex.gateway.utils.JsonUtil;
+import com.systex.gateway.utils.JwtUtil;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,14 +39,15 @@ public class RateLimitFilter extends AbstractGatewayFilterFactory<RateLimitFilte
                 return chain.filter(exchange);
             } else {
                 exchange.getResponse().setStatusCode(config.getStatusCode());
-                return exchange.getResponse().setComplete();
+                DataBuffer buffer = GateWayResponseHelper.parseToDataBuffer(config.getStatusCode(),429,Config.TOO_MANY_REQUEST,exchange.getResponse());
+                return exchange.getResponse().writeWith(Mono.just(buffer));
             }
         };
     }
 
     public static class Config {
         private HttpStatus statusCode = HttpStatus.TOO_MANY_REQUESTS; // 默認為 HTTP 429 Too Many Requests
-
+        private static final String TOO_MANY_REQUEST="Too many requests, please try again later.";
         public HttpStatus getStatusCode() {
             return statusCode;
         }
