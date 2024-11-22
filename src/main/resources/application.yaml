@@ -13,7 +13,7 @@ spring:
         - id: route2
           uri: http://127.0.0.1:8000/
           predicates:
-            - Path=/uploadpdf
+            - Path=/uploadpdf/
             - Method=POST
           filters:
             - AuthorizationFilter

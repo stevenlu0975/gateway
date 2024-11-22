@@ -33,22 +33,25 @@
         formData.append("file", file);
         // Add headers
         const headers = {
-          "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiTUFTVEVSIiwiVVNFUl9JRCI6IjEyMzQ1IiwiZXhwIjoxNzMzNjQ1NDMyfQ.dFGznLlWsmjyd21yuvd6UGRHPDoJ0Umegfh7tQYnPqY",  // Example authorization header// Replace with your custom header
+          "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiTUFTVEVSIiwiVVNFUl9JRCI6IjEyMzQ1IiwiZXhwIjoxNzMzNjQ1NDMyfQ.dFGznLlWsmjyd21yuvd6UGRHPDoJ0Umegfh7tQYnPqY",  // master
+          // "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJST0xFIjoidXNlciIsIlVTRVJfSUQiOiIxMjM0NSIsImV4cCI6MTczMzY0NTU0Nn0.uLe_rFgA-CWRyd6tPLXglU4xrJNoPqp-8-p1aBXwk2E",  // user
         };
-        const response = await fetch("/uploadpdf", {
+        const response = await fetch("/uploadpdf/", {
           method: "POST",
           body: formData,
           headers: headers,
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+          const errorText = await response.text(); // 解析錯誤訊息
+          throw new Error(`${errorText}`);
 
+        }
         const result = await response.json();
+
         console.log("File uploaded successfully:", result);
       } catch (error) {
-        console.error("Error during file upload:", error);
+        console.error(error.message || error);
       }
     };
 
