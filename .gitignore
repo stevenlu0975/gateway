@@ -4,9 +4,4 @@ src/test/java/com/systex/gateway/GatewayApplicationTests.java
 mvnw
 mvnw.cmd
 target/*
-.idea/compiler.xml
-.idea/encodings.xml
-.idea/jarRepositories.xml
-.idea/misc.xml
-.idea/uiDesigner.xml
-.idea/vcs.xml
+.idea/*
