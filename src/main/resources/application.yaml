@@ -11,15 +11,15 @@ spring:
             - AddResponseHeader=Y-Request-Foo, Bar
             - AuthenticationFilter
         - id: route2
-          uri: http://127.0.0.1:8000/
+          uri: http://127.0.0.1:8000
           predicates:
-            - Path=/uploadpdf/
+            - Path=/uploadpdf
             - Method=POST
           filters:
             - AuthorizationFilter
             - RateLimitFilter
         - id: route3
-          uri: http://127.0.0.1:8000/
+          uri: http://127.0.0.1:8000
           predicates:
             - Path=/user
             - Method=GET

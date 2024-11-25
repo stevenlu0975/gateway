@@ -1,5 +1,9 @@
 package com.systex.gateway.utils;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
@@ -9,7 +13,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtUtil {
-	public static final String KEY="systex";
+//	public static final String KEY="systex";
+	public static final String KEY="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzI+VmlAtc/hyGv+QxoBz3E6b2wHFZ7FCYRjwXVw9+thaj82V/+l1D5s5KlkE75rz9P6sqZvnz9GyHl6jl8KF+hhVXbUeGQ9XyCkJbHdvj7RFq6+8ISopK0SpFDhvKAz2g8IaOPODiL7mwTEFeTm100Nf77ZuRLS2kjTiQ0jiljguvQaX0QgNDrJioCrJbr4MnlQwGG2K09pIywQsi3K+VHPCHqPDfBFoihhW5g/+FaRQEjRwcZJoR0AZxIf1XEy9YWo1Q1Gwo5tIWcWLm5BqjLl32WGCB4BSLNiSiVCmYd4ogNvmGUyhxWssilDDcLOOO43/+d3nVa0CYZ5pN/gxCwIDAQAB";
     /**
      * 生成jwt
      * 使用Hs256算法, key使用固定字串
@@ -21,7 +26,8 @@ public class JwtUtil {
      */
     public static String createJWT(String secretKey, long ttlMillis, Map<String, Object> claims) {
         // 指定簽名的時候使用的簽名算法，也就是header那部分
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+//        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RS256;
         // 生成JWT的時間
         long expMillis = System.currentTimeMillis() + ttlMillis;
         Date exp = new Date(expMillis);
@@ -51,5 +57,24 @@ public class JwtUtil {
                 // 設置需要解析的jwt
                 .parseClaimsJws(token).getBody();
         return claims;
+    }
+
+    public static Claims parseJWT(PublicKey publicKey, String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(publicKey)
+                .parseClaimsJws(token).getBody();
+        return claims;
+    }
+
+    public static PublicKey loadPublicKey(String publicKeyStr) throws Exception {
+        String publicKeyPEM = publicKeyStr
+                .replace("-----BEGIN PUBLIC KEY-----", "")
+                .replace("-----END PUBLIC KEY-----", "")
+                .replaceAll("\\s", "");
+
+        byte[] keyBytes = Base64.getDecoder().decode(publicKeyPEM);
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+        return kf.generatePublic(spec);
     }
 }
