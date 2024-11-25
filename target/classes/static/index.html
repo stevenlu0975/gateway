@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  <div class="content">
+    <p style="text-align:center">
+    <form enctype = "multipart/form-data">
+      <input type = "file" name = "file" size = "50" id="file"/>
+      <br />
+      <input type = "button" value = "Upload File" id="submit"/>
+    </form>
+
+    <a class="btn btn-success" href="/get" role="button">開始</a>
+
+    </p>
+  </div>
+  <script>
+    const uploadCall = async () => {
+      try {
+        console.log("Uploading file...");
+        const fileInput = document.getElementById("file");
+        const file = fileInput.files[0];
+
+        if (!file) {
+        	console.error("No file selected!");
+        	return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+        // Add headers
+        const headers = {
+          "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiTUFTVEVSIiwiVVNFUl9JRCI6IjEyMzQ1IiwiZXhwIjoxNzMzNjQ1NDMyfQ.dFGznLlWsmjyd21yuvd6UGRHPDoJ0Umegfh7tQYnPqY",  // master
+          // "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJST0xFIjoidXNlciIsIlVTRVJfSUQiOiIxMjM0NSIsImV4cCI6MTczMzY0NTU0Nn0.uLe_rFgA-CWRyd6tPLXglU4xrJNoPqp-8-p1aBXwk2E",  // user
+        };
+        const response = await fetch("/uploadpdf/", {
+          method: "POST",
+          body: formData,
+          headers: headers,
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text(); // 解析錯誤訊息
+          throw new Error(`${errorText}`);
+
+        }
+        const result = await response.json();
+
+        console.log("File uploaded successfully:", result);
+      } catch (error) {
+        console.error(error.message || error);
+      }
+    };
+
+    function throttleApiCall(uploadCall, delay){
+      let lastCallTime = 0;
+
+      return function(...args){
+        const currentTime = new Date().getTime();
+
+        if(currentTime - lastCallTime >= delay){
+          uploadCall.apply(this, args);
+          lastCallTime = currentTime;
+        }
+      }
+    }
+    const throttling = throttleApiCall(uploadCall, 10000); // ms
+    document.getElementById("submit").addEventListener("click", throttling);
+  </script>
+</body>
+</html>
