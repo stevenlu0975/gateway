@@ -13,7 +13,7 @@
       <input type = "button" value = "Upload File" id="submit"/>
     </form>
 
-    <a class="btn btn-success" href="/get" role="button">開始</a>
+    <a class="btn btn-success" href="https://www.keycloak.org/app/" role="button">開始</a>
 
     </p>
   </div>
@@ -36,7 +36,7 @@
           "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiTUFTVEVSIiwiVVNFUl9JRCI6IjEyMzQ1IiwiZXhwIjoxNzMzNjQ1NDMyfQ.dFGznLlWsmjyd21yuvd6UGRHPDoJ0Umegfh7tQYnPqY",  // master
           // "Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJST0xFIjoidXNlciIsIlVTRVJfSUQiOiIxMjM0NSIsImV4cCI6MTczMzY0NTU0Nn0.uLe_rFgA-CWRyd6tPLXglU4xrJNoPqp-8-p1aBXwk2E",  // user
         };
-        const response = await fetch("/uploadpdf/", {
+        const response = await fetch("/uploadpdf", {
           method: "POST",
           body: formData,
           headers: headers,
