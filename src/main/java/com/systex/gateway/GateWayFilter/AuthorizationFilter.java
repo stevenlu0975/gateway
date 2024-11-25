@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @Component
 public class AuthorizationFilter extends AbstractGatewayFilterFactory<AuthorizationFilter.Config> {
@@ -43,10 +46,43 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
         };
     }
     private boolean isMaster(Claims claims){
-        log.info("USER_ID {}",claims.get("USER_ID"));
-        String role = (String) claims.get("ROLE");
-        log.info("ROLE {}",role);
-        return role != null && role.equals("MASTER");
+
+//        log.info("USER_ID {}",claims.get("USER_ID"));
+//        String role = (String) claims.get("ROLE");
+//        log.info("ROLE {}",role);
+//        return role != null && role.equals("MASTER");
+        // 1. 獲取 realm_access
+        Map<String, Object> realmAccess = (Map<String, Object>) claims.get("realm_access");
+        if(realmAccess==null){
+            return false;
+        }
+        List<String> realmRoles = (List<String>) realmAccess.get("roles");
+
+        if(realmRoles==null || !realmRoles.contains("uploadpdf")){
+            return false;
+        }
+        System.out.println("Realm Roles: " + realmRoles);
+
+        // 2. 獲取 resource_access
+        Map<String, Object> resourceAccess = (Map<String, Object>) claims.get("resource_access");
+        if(resourceAccess==null){
+            return false;
+        }
+        // 針對特定的 client (如 myclient)
+        Map<String, Object> myClientRoles = (Map<String, Object>) resourceAccess.get("myclient");
+        if(myClientRoles == null){
+            return false;
+        }
+        List<String> clientRoles = (List<String>) myClientRoles.get("roles");
+        if(clientRoles == null){
+            return false;
+        }
+        System.out.println("MyClient Roles: " + clientRoles);
+        if(clientRoles.contains("uploadpdf")){
+            return true;
+        }
+
+        return false;
     }
 
     private Claims isValidToken(String token) {
@@ -56,7 +92,8 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
             if(token==null) {
                 throw new Exception("no token");
             }
-            claims = JwtUtil.parseJWT(JwtUtil.KEY, token);
+//            claims = JwtUtil.parseJWT(JwtUtil.KEY, token);
+            claims = JwtUtil.parseJWT(JwtUtil.loadPublicKey(JwtUtil.KEY), token);
         }
         catch (ExpiredJwtException e) {
             log.error(e.getMessage());
